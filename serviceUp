@@ -1,0 +1,44 @@
+import requests
+import time
+import json
+from datetime import datetime
+url = 'https://api.wallex.ir/v1/account/trades'
+
+headers = {'X-API-Key': 'your wallex api'}
+
+url_slack = "your slack channle url"
+
+headers_slack = {'Content-type': 'application/json'}
+
+data_slack = {"text": "bot  to divare mard"}
+
+
+while 1>0 :
+    response = requests.get(url, headers=headers)
+
+    response = response.json()
+
+    account_latest_trades = response['result']['AccountLatestTrades']
+    
+    timestamps = [trade['timestamp'] for trade in account_latest_trades]
+    
+    xxx = timestamps[0]
+    
+    timestamp_str = xxx
+    
+    timestamp_dt = datetime.strptime(timestamp_str, '%Y-%m-%dT%H:%M:%SZ')
+
+    xxx = int(timestamp_dt.timestamp())
+    
+    xxx=xxx+12600
+
+    now = time.time()
+
+    time_difference = now - xxx
+
+    time_difference_minutes = time_difference / 60
+    print(time_difference_minutes)
+
+    if time_difference_minutes > 15 :
+        response = requests.post(url_slack, data=json.dumps(data_slack), headers=headers_slack)
+
